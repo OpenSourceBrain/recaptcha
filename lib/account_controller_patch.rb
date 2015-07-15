@@ -28,6 +28,17 @@ module AccountControllerRecaptchaPatch
               @user.password, @user.password_confirmation = user_params[:password], user_params[:password_confirmation]
             end
             if verify_recaptcha(:model => @user, :private_key => Setting.plugin_recaptcha['recaptcha_private_key'])
+              
+              #Geppetto register
+              geppettoRegisterURL = Rails.application.config.serversIP["geppettoIP"] + "user?username=" + user_params[:login] + "&password=" + user_params[:password]
+              begin
+                geppettoRegisterContent = open(geppettoRegisterURL)
+              rescue => e
+                print "Error requesting url: #{geppettoRegisterURL}"
+              else
+                geppettoRegisterContent = JSON.parse(geppettoRegisterContent.read)
+              end
+              
               case Setting.self_registration
               when '1'
                 register_by_email_activation(@user)
