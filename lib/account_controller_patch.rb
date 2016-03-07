@@ -38,8 +38,9 @@ module AccountControllerRecaptchaPatch
                 register_manually_by_administrator(@user)
               end
               
-              #Geppetto register
-              geppettoRegisterURL = Rails.application.config.serversIP["geppettoIP"] + "user?username=" + @user.login + "&password=" + @user.hashed_password
+              #Geppetto register (We assume the usergroup has Id=1. Check DBOSBData.java in geppetto persistence bundle)
+              parameters = "username=" + @user.login + "&password=" + @user.hashed_password + "&userGroupId=1"
+              geppettoRegisterURL = Rails.application.config.serversIP["geppettoIP"] + Rails.application.config.serversIP["geppettoContextPath"] + "user?" + parameters 
               begin
                 geppettoRegisterContent = open(geppettoRegisterURL)
               rescue => e
